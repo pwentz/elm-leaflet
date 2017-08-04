@@ -8260,21 +8260,7 @@ var _elm_lang$html$Html_Events$Options = F2(
 		return {stopPropagation: a, preventDefault: b};
 	});
 
-var _user$project$Main$init = {
-	ctor: '_Tuple2',
-	_0: {message: 'Good things'},
-	_1: _elm_lang$core$Platform_Cmd$none
-};
-var _user$project$Main$mapboxToken = 'pk.eyJ1IjoicHdlbnR6IiwiYSI6ImNpdHp1bWNwdzBmeWUybm82czM5dXJrbmgifQ.9VjnHsAL0MgpDCDPrJou0A';
-var _user$project$Main$mapData = {
-	divId: 'map',
-	lat: 51.505,
-	lng: -9.0e-2,
-	zoom: 13,
-	tileLayer: A2(_elm_lang$core$Basics_ops['++'], 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=', _user$project$Main$mapboxToken),
-	tileLayerOptions: {attribution: '', maxZoom: 18, id: 'mapbox.streets', accessToken: _user$project$Main$mapboxToken}
-};
-var _user$project$Main$initMap = _elm_lang$core$Native_Platform.outgoingPort(
+var _user$project$Leaflet$initMap = _elm_lang$core$Native_Platform.outgoingPort(
 	'initMap',
 	function (v) {
 		return {
@@ -8286,36 +8272,85 @@ var _user$project$Main$initMap = _elm_lang$core$Native_Platform.outgoingPort(
 			tileLayerOptions: {attribution: v.tileLayerOptions.attribution, maxZoom: v.tileLayerOptions.maxZoom, id: v.tileLayerOptions.id, accessToken: v.tileLayerOptions.accessToken}
 		};
 	});
-var _user$project$Main$update = F2(
-	function (msg, model) {
-		var _p0 = msg;
-		if (_p0.ctor === 'UpdateStr') {
-			return {
-				ctor: '_Tuple2',
-				_0: _elm_lang$core$Native_Utils.update(
-					model,
-					{message: _p0._0}),
-				_1: _elm_lang$core$Platform_Cmd$none
-			};
-		} else {
-			return {
-				ctor: '_Tuple2',
-				_0: model,
-				_1: _user$project$Main$initMap(_user$project$Main$mapData)
-			};
-		}
+var _user$project$Leaflet$addMarker = _elm_lang$core$Native_Platform.outgoingPort(
+	'addMarker',
+	function (v) {
+		return {lat: v.lat, lng: v.lng};
 	});
-var _user$project$Main$toElm = _elm_lang$core$Native_Platform.incomingPort('toElm', _elm_lang$core$Json_Decode$value);
-var _user$project$Main$Model = function (a) {
-	return {message: a};
-};
-var _user$project$Main$MapData = F6(
+var _user$project$Leaflet$MapData = F6(
 	function (a, b, c, d, e, f) {
 		return {divId: a, lat: b, lng: c, zoom: d, tileLayer: e, tileLayerOptions: f};
 	});
+
+var _user$project$Main$init = {
+	ctor: '_Tuple2',
+	_0: {lat: 0.0, lng: 0.0},
+	_1: _elm_lang$core$Platform_Cmd$none
+};
+var _user$project$Main$mapboxToken = 'pk.eyJ1IjoicHdlbnR6IiwiYSI6ImNpdHp1bWNwdzBmeWUybm82czM5dXJrbmgifQ.9VjnHsAL0MgpDCDPrJou0A';
+var _user$project$Main$mapData = {
+	divId: 'map',
+	lat: 41.876548,
+	lng: -87.633755,
+	zoom: 13,
+	tileLayer: A2(_elm_lang$core$Basics_ops['++'], 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=', _user$project$Main$mapboxToken),
+	tileLayerOptions: {attribution: '', maxZoom: 18, id: 'mapbox.streets', accessToken: _user$project$Main$mapboxToken}
+};
+var _user$project$Main$update = F2(
+	function (msg, model) {
+		var _p0 = msg;
+		switch (_p0.ctor) {
+			case 'UpdateLat':
+				var _p1 = _elm_lang$core$String$toFloat(_p0._0);
+				if (_p1.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{lat: _p1._0}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				}
+			case 'UpdateLng':
+				var _p2 = _elm_lang$core$String$toFloat(_p0._0);
+				if (_p2.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{lng: _p2._0}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				}
+			case 'InitMap':
+				return {
+					ctor: '_Tuple2',
+					_0: model,
+					_1: _user$project$Leaflet$initMap(_user$project$Main$mapData)
+				};
+			default:
+				return {
+					ctor: '_Tuple2',
+					_0: model,
+					_1: _user$project$Leaflet$addMarker(model)
+				};
+		}
+	});
+var _user$project$Main$Model = F2(
+	function (a, b) {
+		return {lat: a, lng: b};
+	});
+var _user$project$Main$AddMarker = {ctor: 'AddMarker'};
 var _user$project$Main$InitMap = {ctor: 'InitMap'};
-var _user$project$Main$UpdateStr = function (a) {
-	return {ctor: 'UpdateStr', _0: a};
+var _user$project$Main$UpdateLng = function (a) {
+	return {ctor: 'UpdateLng', _0: a};
+};
+var _user$project$Main$UpdateLat = function (a) {
+	return {ctor: 'UpdateLat', _0: a};
 };
 var _user$project$Main$view = function (model) {
 	return A2(
@@ -8330,10 +8365,11 @@ var _user$project$Main$view = function (model) {
 					_0: _elm_lang$html$Html_Attributes$type_('text'),
 					_1: {
 						ctor: '::',
-						_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$UpdateStr),
+						_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$UpdateLat),
 						_1: {
 							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$value(model.message),
+							_0: _elm_lang$html$Html_Attributes$value(
+								_elm_lang$core$Basics$toString(model.lat)),
 							_1: {ctor: '[]'}
 						}
 					}
@@ -8342,55 +8378,92 @@ var _user$project$Main$view = function (model) {
 			_1: {
 				ctor: '::',
 				_0: A2(
-					_elm_lang$html$Html$button,
+					_elm_lang$html$Html$input,
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$InitMap),
-						_1: {ctor: '[]'}
+						_0: _elm_lang$html$Html_Attributes$type_('text'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$UpdateLng),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$value(
+									_elm_lang$core$Basics$toString(model.lng)),
+								_1: {ctor: '[]'}
+							}
+						}
 					},
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html$text('Click to Submit'),
-						_1: {ctor: '[]'}
-					}),
+					{ctor: '[]'}),
 				_1: {
 					ctor: '::',
 					_0: A2(
-						_elm_lang$html$Html$div,
+						_elm_lang$html$Html$button,
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$id('map'),
+							_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$InitMap),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('Create Map'),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$br,
+							{ctor: '[]'},
+							{ctor: '[]'}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$button,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$AddMarker),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('Add Marker'),
+									_1: {ctor: '[]'}
+								}),
 							_1: {
 								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$style(
+								_0: A2(
+									_elm_lang$html$Html$div,
 									{
 										ctor: '::',
-										_0: {ctor: '_Tuple2', _0: 'height', _1: '180px'},
-										_1: {ctor: '[]'}
-									}),
+										_0: _elm_lang$html$Html_Attributes$id('map'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$style(
+												{
+													ctor: '::',
+													_0: {ctor: '_Tuple2', _0: 'height', _1: '500px'},
+													_1: {ctor: '[]'}
+												}),
+											_1: {ctor: '[]'}
+										}
+									},
+									{ctor: '[]'}),
 								_1: {ctor: '[]'}
 							}
-						},
-						{ctor: '[]'}),
-					_1: {ctor: '[]'}
+						}
+					}
 				}
 			}
 		});
 };
-var _user$project$Main$decodeValue = function (val) {
-	var result = A2(_elm_lang$core$Json_Decode$decodeValue, _elm_lang$core$Json_Decode$string, val);
-	var _p1 = result;
-	if (_p1.ctor === 'Ok') {
-		return _user$project$Main$UpdateStr(_p1._0);
-	} else {
-		return _user$project$Main$UpdateStr('Something went wrong');
-	}
-};
-var _user$project$Main$subscriptions = function (model) {
-	return _user$project$Main$toElm(_user$project$Main$decodeValue);
-};
 var _user$project$Main$main = _elm_lang$html$Html$program(
-	{init: _user$project$Main$init, update: _user$project$Main$update, view: _user$project$Main$view, subscriptions: _user$project$Main$subscriptions})();
+	{
+		init: _user$project$Main$init,
+		update: _user$project$Main$update,
+		view: _user$project$Main$view,
+		subscriptions: function (_p3) {
+			return _elm_lang$core$Platform_Sub$none;
+		}
+	})();
 
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};

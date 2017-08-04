@@ -1,10 +1,11 @@
-port module Main exposing (main)
+module Main exposing (main)
 
 import Html exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Html.Attributes exposing (type_, value, style, id)
 import Json.Encode exposing (Value)
 import Json.Decode as Json
+import Leaflet as L
 
 
 main =
@@ -12,27 +13,13 @@ main =
         { init = init
         , update = update
         , view = view
-        , subscriptions = subscriptions
+        , subscriptions = \_ -> Sub.none
         }
 
 
 type alias Model =
-    { message : String
-    }
-
-
-type alias MapData =
-    { divId : String
-    , lat : Float
+    { lat : Float
     , lng : Float
-    , zoom : Int
-    , tileLayer : String
-    , tileLayerOptions :
-        { attribution : String
-        , maxZoom : Int
-        , id : String
-        , accessToken : String
-        }
     }
 
 
@@ -41,11 +28,11 @@ mapboxToken =
     "pk.eyJ1IjoicHdlbnR6IiwiYSI6ImNpdHp1bWNwdzBmeWUybm82czM5dXJrbmgifQ.9VjnHsAL0MgpDCDPrJou0A"
 
 
-mapData : MapData
+mapData : L.MapData
 mapData =
     { divId = "map"
-    , lat = 51.505
-    , lng = -0.09
+    , lat = 41.876548
+    , lng = -87.633755
     , zoom = 13
     , tileLayer = "https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=" ++ mapboxToken
     , tileLayerOptions =
@@ -57,15 +44,13 @@ mapData =
     }
 
 
-port initMap : MapData -> Cmd msg
-
-
-port toElm : (Value -> msg) -> Sub msg
-
-
 init : ( Model, Cmd Msg )
 init =
-    ( { message = "Good things" }, Cmd.none )
+    ( { lat = 0.0
+      , lng = 0.0
+      }
+    , Cmd.none
+    )
 
 
 
@@ -78,16 +63,26 @@ view model =
         []
         [ input
             [ type_ "text"
-            , onInput UpdateStr
-            , value model.message
+            , onInput UpdateLat
+            , value (toString model.lat)
+            ]
+            []
+        , input
+            [ type_ "text"
+            , onInput UpdateLng
+            , value (toString model.lng)
             ]
             []
         , button
             [ onClick InitMap ]
-            [ text "Click to Submit" ]
+            [ text "Create Map" ]
+        , br [] []
+        , button
+            [ onClick AddMarker ]
+            [ text "Add Marker" ]
         , div
             [ id "map"
-            , style [ ( "height", "180px" ) ]
+            , style [ ( "height", "500px" ) ]
             ]
             []
         ]
@@ -98,38 +93,35 @@ view model =
 
 
 type Msg
-    = UpdateStr String
+    = UpdateLat String
+    | UpdateLng String
     | InitMap
+    | AddMarker
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        UpdateStr str ->
-            ( { model | message = str }, Cmd.none )
+        UpdateLat str ->
+            case String.toFloat str of
+                Ok lat ->
+                    ( { model | lat = lat }, Cmd.none )
+
+                Err _ ->
+                    ( model, Cmd.none )
+
+        UpdateLng str ->
+            case String.toFloat str of
+                Ok lng ->
+                    ( { model | lng = lng }, Cmd.none )
+
+                Err _ ->
+                    ( model, Cmd.none )
 
         InitMap ->
-            ( model, initMap mapData )
+            ( model, L.initMap mapData )
 
-
-
--- SUBS
-
-
-decodeValue : Value -> Msg
-decodeValue val =
-    let
-        result =
-            Json.decodeValue Json.string val
-    in
-        case result of
-            Ok str ->
-                UpdateStr str
-
-            Err _ ->
-                UpdateStr "Something went wrong"
-
-
-subscriptions : Model -> Sub Msg
-subscriptions model =
-    toElm decodeValue
+        AddMarker ->
+            ( model
+            , L.addMarker model
+            )
