@@ -8275,7 +8275,23 @@ var _user$project$Leaflet$initMap = _elm_lang$core$Native_Platform.outgoingPort(
 var _user$project$Leaflet$addMarker = _elm_lang$core$Native_Platform.outgoingPort(
 	'addMarker',
 	function (v) {
-		return {lat: v.lat, lng: v.lng};
+		return {
+			lat: v.lat,
+			lng: v.lng,
+			icon: (v.icon.ctor === 'Nothing') ? null : {
+				url: v.icon._0.url,
+				size: {height: v.icon._0.size.height, width: v.icon._0.size.width}
+			},
+			draggable: v.draggable
+		};
+	});
+var _user$project$Leaflet$Icon = F2(
+	function (a, b) {
+		return {url: a, size: b};
+	});
+var _user$project$Leaflet$Marker = F4(
+	function (a, b, c, d) {
+		return {lat: a, lng: b, icon: c, draggable: d};
 	});
 var _user$project$Leaflet$MapData = F6(
 	function (a, b, c, d, e, f) {
@@ -8333,10 +8349,20 @@ var _user$project$Main$update = F2(
 					_1: _user$project$Leaflet$initMap(_user$project$Main$mapData)
 				};
 			default:
+				var icon = {
+					url: 'https://openclipart.org/image/2400px/svg_to_png/189639/caution-pedestrian-crosswalk.png',
+					size: {height: 25, width: 25}
+				};
 				return {
 					ctor: '_Tuple2',
 					_0: model,
-					_1: _user$project$Leaflet$addMarker(model)
+					_1: _user$project$Leaflet$addMarker(
+						{
+							lat: model.lat,
+							lng: model.lng,
+							icon: _elm_lang$core$Maybe$Just(icon),
+							draggable: true
+						})
 				};
 		}
 	});

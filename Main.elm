@@ -122,6 +122,17 @@ update msg model =
             ( model, L.initMap mapData )
 
         AddMarker ->
-            ( model
-            , L.addMarker model
-            )
+            let
+                icon =
+                    { url = "https://openclipart.org/image/2400px/svg_to_png/189639/caution-pedestrian-crosswalk.png"
+                    , size = { height = 25, width = 25 }
+                    }
+            in
+                ( model
+                , L.addMarker
+                    { lat = model.lat
+                    , lng = model.lng
+                    , icon = Just icon
+                    , draggable = True
+                    }
+                )
