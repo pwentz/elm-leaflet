@@ -8282,16 +8282,21 @@ var _user$project$Leaflet$addMarker = _elm_lang$core$Native_Platform.outgoingPor
 				url: v.icon._0.url,
 				size: {height: v.icon._0.size.height, width: v.icon._0.size.width}
 			},
-			draggable: v.draggable
+			draggable: v.draggable,
+			popup: (v.popup.ctor === 'Nothing') ? null : v.popup._0,
+			events: (v.events.ctor === 'Nothing') ? null : _elm_lang$core$Native_List.toArray(v.events._0).map(
+				function (v) {
+					return [v._0, v._1];
+				})
 		};
 	});
 var _user$project$Leaflet$Icon = F2(
 	function (a, b) {
 		return {url: a, size: b};
 	});
-var _user$project$Leaflet$Marker = F4(
-	function (a, b, c, d) {
-		return {lat: a, lng: b, icon: c, draggable: d};
+var _user$project$Leaflet$Marker = F6(
+	function (a, b, c, d, e, f) {
+		return {lat: a, lng: b, icon: c, draggable: d, popup: e, events: f};
 	});
 var _user$project$Leaflet$MapData = F6(
 	function (a, b, c, d, e, f) {
@@ -8361,7 +8366,14 @@ var _user$project$Main$update = F2(
 							lat: model.lat,
 							lng: model.lng,
 							icon: _elm_lang$core$Maybe$Just(icon),
-							draggable: true
+							draggable: true,
+							popup: _elm_lang$core$Maybe$Just('<h1>Big ol\' text</h1>'),
+							events: _elm_lang$core$Maybe$Just(
+								{
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'click', _1: 'togglePopup'},
+									_1: {ctor: '[]'}
+								})
 						})
 				};
 		}

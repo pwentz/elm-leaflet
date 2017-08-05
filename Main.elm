@@ -134,5 +134,7 @@ update msg model =
                     , lng = model.lng
                     , icon = Just icon
                     , draggable = True
+                    , popup = Just "<h1>Big ol' text</h1>"
+                    , events = Just [ ( "click", "togglePopup" ) ]
                     }
                 )

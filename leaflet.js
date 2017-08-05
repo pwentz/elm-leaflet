@@ -18,8 +18,25 @@ function addMarker(options) {
   var markerOptions = icon ? { icon: L.icon(icon), draggable: options.draggable }
                            : { draggable: options.draggable }
 
-  L.marker([options.lat, options.lng], markerOptions)
-   .addTo(myMap);
+  var marker = L.marker([options.lat, options.lng], markerOptions)
+
+   marker.addTo(myMap);
+
+  if (options.popup) {
+    marker.bindPopup(options.popup)
+  }
+
+  if (options.events) {
+    options.events.forEach(function(eventData) {
+      var event = eventData[0];
+      var action = eventData[1];
+
+      marker.on(event, function() {
+        marker[action];
+      });
+    });
+  };
+
 };
 
 

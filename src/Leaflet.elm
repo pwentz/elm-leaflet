@@ -12,6 +12,8 @@ type alias Marker =
     , lng : Float
     , icon : Maybe Icon
     , draggable : Bool
+    , popup : Maybe String
+    , events : Maybe (List ( String, String ))
     }
 
 
